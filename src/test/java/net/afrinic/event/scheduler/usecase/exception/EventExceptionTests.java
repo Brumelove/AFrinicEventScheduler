@@ -27,6 +27,7 @@ public class EventExceptionTests {
         });
 
     }
+
     @Test
     void scheduleEventException() {
         FileInputStream fileInputStream;
@@ -36,13 +37,16 @@ public class EventExceptionTests {
             fileInputStream = new FileInputStream(filePath);
             scanner = new Scanner(fileInputStream);
         } catch (FileNotFoundException ex) {
-            System.out.println("file not found");
+            Assertions.assertThrows(EventDurationInvalidException.class, () -> {
+                EventSchedulerService.getEventDuration(filePath);
+            });
         }finally {
             try {
                 scanner.close();
             } catch (NullPointerException e) {
-                System.out.println("null input ");
-            }
+                Assertions.assertThrows(EventDurationInvalidException.class, () -> {
+                    EventSchedulerService.getEventDuration(filePath);
+                });            }
         }
 
     }

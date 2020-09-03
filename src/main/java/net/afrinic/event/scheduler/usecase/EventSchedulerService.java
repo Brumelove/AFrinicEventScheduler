@@ -3,7 +3,9 @@ package net.afrinic.event.scheduler.usecase;
 
 import lombok.extern.slf4j.Slf4j;
 import net.afrinic.event.scheduler.usecase.exception.EventDurationInvalidException;
+import net.afrinic.event.scheduler.usecase.exception.FilePathInvalidException;
 import net.afrinic.event.scheduler.usecase.exception.IncorrectSessionValueException;
+import net.afrinic.event.scheduler.usecase.exception.NullPointerForScannerException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -82,16 +84,13 @@ public class EventSchedulerService {
 
         } catch (FileNotFoundException fileNotFoundException) {
 
-            System.out.println("No such file or directory ");
-        } finally {
-            try {
-                scanner.close();
-            } catch (NullPointerException e) {
-                System.out.println("Scanner Input is Empty, please confirm you are passing the right file or directory ");
-
-            }
+            throw new FilePathInvalidException();
         }
-
+        try {
+            scanner.close();
+        } catch (NullPointerException e) {
+            throw new NullPointerForScannerException();
+        }
 
 
     }
@@ -105,7 +104,7 @@ public class EventSchedulerService {
             } else {
                 duration = Integer.parseInt(fileReaderTime.substring(0, fileReaderTime.length() - 3));
             }
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
 
             throw new EventDurationInvalidException();
         }
@@ -127,9 +126,8 @@ public class EventSchedulerService {
     public static String calculateLastSession(int sessions, int hour, int minute) {
         String networkingTime = null;
         if (sessions < 2) {
-            throw new  IncorrectSessionValueException();
-        }
-        else if ((sessions % 2) == 0) //If last session is an afternoon session then networking event that comes after it should be printed
+            throw new IncorrectSessionValueException();
+        } else if ((sessions % 2) == 0) //If last session is an afternoon session then networking event that comes after it should be printed
         {
             if (hour < 4 || ((hour == 4) && minute < 30)) {
                 hour = 4;
