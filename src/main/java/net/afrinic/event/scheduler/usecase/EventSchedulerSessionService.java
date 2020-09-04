@@ -3,9 +3,10 @@ package net.afrinic.event.scheduler.usecase;
 import net.afrinic.event.scheduler.usecase.exception.EventDurationInvalidException;
 import net.afrinic.event.scheduler.usecase.exception.IncorrectSessionValueException;
 
-import static net.afrinic.event.scheduler.usecase.EventSchedulerService.timeToString;
+public class EventSchedulerSessionService {
 
-class EventSchedulerSessionService {
+     EventSchedulerService eventSchedulerService = new EventSchedulerService();
+
     public static int getSessionHour(int sessions, int hour, int minute) {
         if ((sessions % 2) == 1) { // Morning session
             hour = getMorningSessionHour(sessions, hour, minute);
@@ -30,7 +31,9 @@ class EventSchedulerSessionService {
                 hour = 4;
                 minute = 30;
             }
-            var networkingTime = timeToString(hour, minute);
+            var eventSchedulerService = new EventSchedulerService();
+
+            var networkingTime = eventSchedulerService.timeToString(hour, minute);
             System.out.println(networkingTime + ": Networking\n");
         }
         System.out.println("Day " + ((sessions / 2) + 1) + ":\n");
@@ -39,7 +42,7 @@ class EventSchedulerSessionService {
         return hour;
     }
 
-    public static String calculateLastSession(int sessions, int hour, int minute) {
+    public  String calculateLastSession(int sessions, int hour, int minute) {
         String networkingTime = null;
         if (sessions < 2) {
             throw new IncorrectSessionValueException();
@@ -49,7 +52,7 @@ class EventSchedulerSessionService {
                 hour = 4;
                 minute = 30;
             }
-            networkingTime = timeToString(hour, minute);
+            networkingTime = eventSchedulerService.timeToString(hour, minute);
 
             System.out.println(networkingTime + ": Networking\n");
         }
@@ -58,7 +61,7 @@ class EventSchedulerSessionService {
         return networkingTime;
     }
 
-    public static int getEventDuration(String fileReaderTime) {
+    public  int getEventDuration(String fileReaderTime) {
         String PECHAKUCHA = "PechaKucha";
 
         int duration;

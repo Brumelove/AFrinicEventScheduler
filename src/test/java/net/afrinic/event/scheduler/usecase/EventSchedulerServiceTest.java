@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 
 @SpringBootTest
 class EventSchedulerServiceTest {
+    private EventSchedulerSessionService eventSchedulerSessionService = new EventSchedulerSessionService();
+    private EventSchedulerService eventSchedulerService = new EventSchedulerService();
     private static int sessions;
     private static int minute;
     private static int hour;
@@ -26,7 +28,7 @@ class EventSchedulerServiceTest {
     @Test
     void getEventDuration() {
         var testTime = "90min";
-        var eventDuration = EventSchedulerSessionService.getEventDuration(testTime);
+        var eventDuration = eventSchedulerSessionService.getEventDuration(testTime);
 
         Assertions.assertEquals(eventDuration, 90);
     }
@@ -40,7 +42,7 @@ class EventSchedulerServiceTest {
         var eventTitle = "Title Test";
 
         var actualEventScheduleResult = "09:00-10:00: Title Test (brume)";
-        var printEventScheduleResult = EventSchedulerService.printEventScheduleResult(startTime, endTime, eventTitle, eventSpeaker);
+        var printEventScheduleResult = eventSchedulerService.printEventScheduleResult(startTime, endTime, eventTitle, eventSpeaker);
 
         Assertions.assertEquals(printEventScheduleResult, actualEventScheduleResult);
 
@@ -49,14 +51,14 @@ class EventSchedulerServiceTest {
     @Test
     void calculateLastSession() {
 
-        var calculatedLastSession = EventSchedulerSessionService.calculateLastSession(sessions, hour, minute);
+        var calculatedLastSession = eventSchedulerSessionService.calculateLastSession(sessions, hour, minute);
 
         Assertions.assertEquals(calculatedLastSession, "04:30");
     }
 
     @Test
     void timeToString() {
-        var convertTimeTOString = EventSchedulerService.timeToString(hour, minute);
+        var convertTimeTOString = eventSchedulerService.timeToString(hour, minute);
 
         Assertions.assertEquals(convertTimeTOString, "03:50");
 
@@ -65,7 +67,7 @@ class EventSchedulerServiceTest {
     @Test
     void scheduleEvent() {
         var filePath = "src/test/java/net/afrinic/event/scheduler/domain/test.csv";
-        EventSchedulerService.scheduleEvent(filePath);
+        eventSchedulerService.scheduleEvent(filePath);
     }
 
     @Test()

@@ -4,17 +4,18 @@ package net.afrinic.event.scheduler.usecase;
 import lombok.extern.slf4j.Slf4j;
 import net.afrinic.event.scheduler.domain.EventTimeParameters;
 import net.afrinic.event.scheduler.usecase.exception.FilePathInvalidException;
+import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import static net.afrinic.event.scheduler.usecase.EventSchedulerSessionService.calculateLastSession;
 
 @Slf4j
-class EventSchedulerService {
+@Component
+public class EventSchedulerService {
 
-    public static void scheduleEvent(String filePath) {
+    public void scheduleEvent(String filePath) {
         String REGEX = ";";
 
         FileInputStream fileInputStream;
@@ -30,6 +31,9 @@ class EventSchedulerService {
         try {
             fileInputStream = new FileInputStream(filePath);
             scanner = new Scanner(fileInputStream);
+
+            var eventSchedulerSessionService = new EventSchedulerSessionService();
+
             while (scanner.hasNextLine()) {
                 event = scanner.nextLine().split(REGEX);
 
@@ -38,9 +42,8 @@ class EventSchedulerService {
                 var fileReaderTime = event[1];
                 var fileReaderSpeaker = event[2];
 
-
                 //Parse duration of event in minutes
-                var duration = EventSchedulerSessionService.getEventDuration(fileReaderTime);
+                var duration = eventSchedulerSessionService.getEventDuration(fileReaderTime);
 
                 var eventTimeParameters = new EventTimeParameters(sessions, capacity, hour, minute, duration).invoke();
                 sessions = eventTimeParameters.getSessions();
@@ -59,7 +62,7 @@ class EventSchedulerService {
 
             }
             //calculate last session
-            calculateLastSession(sessions, hour, minute);
+            eventSchedulerSessionService.calculateLastSession(sessions, hour, minute);
             scanner.close();
 
         } catch (FileNotFoundException e) {
@@ -70,7 +73,7 @@ class EventSchedulerService {
     }
 
 
-    public static String printEventScheduleResult(String startTime, String endTime, String
+    public  String printEventScheduleResult(String startTime, String endTime, String
             fileReaderEvent, String fileReaderSpeaker) {
         var stringBuilder = new StringBuilder();
         stringBuilder.append(startTime)
@@ -81,7 +84,7 @@ class EventSchedulerService {
     }
 
 
-    public static String timeToString(int hour, int minute) {
+    public  String timeToString(int hour, int minute) {
         return String.format("%02d", hour) + ":" + String.format("%02d", minute);
     }
 

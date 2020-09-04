@@ -8,11 +8,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class EventExceptionTests {
+    private EventSchedulerSessionService eventSchedulerSessionService = new EventSchedulerSessionService();
+    private EventSchedulerService eventSchedulerService = new EventSchedulerService();
+
 
     @Test()
     public void incorrectSessionValueException() {
         Assertions.assertThrows(IncorrectSessionValueException.class, () -> {
-            EventSchedulerSessionService.calculateLastSession(1, 3, 30);
+            eventSchedulerSessionService.calculateLastSession(1, 3, 30);
         });
 
     }
@@ -20,7 +23,7 @@ public class EventExceptionTests {
     @Test()
     public void numberFormatException() {
         Assertions.assertThrows(EventDurationInvalidException.class, () -> {
-            EventSchedulerSessionService.getEventDuration("90 min");
+            eventSchedulerSessionService.getEventDuration("90 min");
         });
 
     }
@@ -29,7 +32,7 @@ public class EventExceptionTests {
     public void filePathInvalidException() {
         var filePath = "input.csv";
         Assertions.assertThrows(FilePathInvalidException.class, () -> {
-            EventSchedulerService.scheduleEvent(filePath);
+            eventSchedulerService.scheduleEvent(filePath);
         });
 
     }
