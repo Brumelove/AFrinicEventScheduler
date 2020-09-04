@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class EventSchedulerService {
 
     public void scheduleEvent(String filePath) {
-        String REGEX = ";";
+        final String REGEX = ";";
 
         FileInputStream fileInputStream;
         Scanner scanner;
@@ -59,7 +59,6 @@ public class EventSchedulerService {
                 String endTime = timeToString(hour, minute);
                 printEventScheduleResult(startTime, endTime, fileReaderEvent, fileReaderSpeaker);
 
-
             }
             //calculate last session
             eventSchedulerSessionService.calculateLastSession(sessions, hour, minute);
@@ -73,7 +72,7 @@ public class EventSchedulerService {
     }
 
 
-    public  String printEventScheduleResult(String startTime, String endTime, String
+    public String printEventScheduleResult(String startTime, String endTime, String
             fileReaderEvent, String fileReaderSpeaker) {
         var stringBuilder = new StringBuilder();
         stringBuilder.append(startTime)
@@ -84,7 +83,7 @@ public class EventSchedulerService {
     }
 
 
-    public  String timeToString(int hour, int minute) {
+    public String timeToString(int hour, int minute) {
         return String.format("%02d", hour) + ":" + String.format("%02d", minute);
     }
 

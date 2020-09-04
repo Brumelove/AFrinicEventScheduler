@@ -1,7 +1,13 @@
-Event1;180min;Speaker1
-Event2;120min;Speaker2
-Event3;90min;Speaker3
-Event4;30min;Speaker4
-Event5;60min;Speaker5
-Event6;45min;Speaker6
-Event7;PechaKucha;Speaker7
+Event 1;90min;Speaker 1
+Event 2;90min;Speaker 2
+Event 3;30min;Speaker 3
+Event 4;60min;Speaker 4
+Event 12;30min;Speaker 13
+Event 13;45min;Speaker 14
+Event 5;PechaKucha;Speaker 5
+Event 6;45min;Speaker 6
+Event 7;180min;Speaker 7
+Event 8;120min;Speaker 8 & 9
+Event 9;30min;Speaker 10
+Event 10;45min;Speaker 11
+Event 11;PechaKucha;Speaker 12

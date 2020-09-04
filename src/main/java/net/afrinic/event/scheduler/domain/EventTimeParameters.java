@@ -18,7 +18,7 @@ class EventTimeParameters {
     private int duration;
 
 
-    public  EventTimeParameters invoke() {
+    public EventTimeParameters invoke() {
         if (duration > capacity) { //If there is not enough time remaining in last opened session, new session should be opened
             sessions++;
             capacity = 210; //Total time a session has

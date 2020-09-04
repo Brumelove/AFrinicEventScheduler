@@ -5,7 +5,7 @@ import net.afrinic.event.scheduler.usecase.exception.IncorrectSessionValueExcept
 
 public class EventSchedulerSessionService {
 
-     EventSchedulerService eventSchedulerService = new EventSchedulerService();
+    EventSchedulerService eventSchedulerService = new EventSchedulerService();
 
     public static int getSessionHour(int sessions, int hour, int minute) {
         if ((sessions % 2) == 1) { // Morning session
@@ -42,7 +42,7 @@ public class EventSchedulerSessionService {
         return hour;
     }
 
-    public  String calculateLastSession(int sessions, int hour, int minute) {
+    public String calculateLastSession(int sessions, int hour, int minute) {
         String networkingTime = null;
         if (sessions < 2) {
             throw new IncorrectSessionValueException();
@@ -61,8 +61,8 @@ public class EventSchedulerSessionService {
         return networkingTime;
     }
 
-    public  int getEventDuration(String fileReaderTime) {
-        String PECHAKUCHA = "PechaKucha";
+    public int getEventDuration(String fileReaderTime) {
+        final String PECHAKUCHA = "PechaKucha";
 
         int duration;
         try {

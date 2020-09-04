@@ -1,7 +1,7 @@
 package net.afrinic.event.scheduler.usecase;
 
 import net.afrinic.event.scheduler.usecase.exception.ErrorResponse;
-import net.afrinic.event.scheduler.usecase.exception.TestErrorResponseAccess;
+import net.afrinic.event.scheduler.domain.TestErrorResponseAccess;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
