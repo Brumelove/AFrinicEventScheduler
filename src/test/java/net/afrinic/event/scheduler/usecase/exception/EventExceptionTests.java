@@ -1,53 +1,40 @@
 package net.afrinic.event.scheduler.usecase.exception;
 
 import net.afrinic.event.scheduler.usecase.EventSchedulerService;
+import net.afrinic.event.scheduler.usecase.EventSchedulerSessionService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 @SpringBootTest
 public class EventExceptionTests {
 
     @Test()
-    public void incorrectSessionValueException(){
+    public void incorrectSessionValueException() {
         Assertions.assertThrows(IncorrectSessionValueException.class, () -> {
-            EventSchedulerService.calculateLastSession(1, 3, 30);
+            EventSchedulerSessionService.calculateLastSession(1, 3, 30);
         });
 
     }
+
     @Test()
-    public void numberFormatException(){
+    public void numberFormatException() {
         Assertions.assertThrows(EventDurationInvalidException.class, () -> {
-            EventSchedulerService.getEventDuration("90 min");
+            EventSchedulerSessionService.getEventDuration("90 min");
         });
 
     }
 
-    @Test
-    void scheduleEventException() {
-        FileInputStream fileInputStream;
-        Scanner scanner = null;
+    @Test()
+    public void filePathInvalidException() {
         var filePath = "input.csv";
-        try {
-            fileInputStream = new FileInputStream(filePath);
-            scanner = new Scanner(fileInputStream);
-        } catch (FileNotFoundException ex) {
-            Assertions.assertThrows(EventDurationInvalidException.class, () -> {
-                EventSchedulerService.getEventDuration(filePath);
-            });
-        }finally {
-            try {
-                scanner.close();
-            } catch (NullPointerException e) {
-                Assertions.assertThrows(EventDurationInvalidException.class, () -> {
-                    EventSchedulerService.getEventDuration(filePath);
-                });            }
-        }
+        Assertions.assertThrows(FilePathInvalidException.class, () -> {
+            EventSchedulerService.scheduleEvent(filePath);
+        });
 
     }
+
+
+
 }
+

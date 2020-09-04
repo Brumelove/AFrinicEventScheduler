@@ -2,25 +2,23 @@ package net.afrinic.event.scheduler.usecase;
 
 
 import lombok.extern.slf4j.Slf4j;
-import net.afrinic.event.scheduler.usecase.exception.EventDurationInvalidException;
+import net.afrinic.event.scheduler.domain.EventTimeParameters;
 import net.afrinic.event.scheduler.usecase.exception.FilePathInvalidException;
-import net.afrinic.event.scheduler.usecase.exception.IncorrectSessionValueException;
-import net.afrinic.event.scheduler.usecase.exception.NullPointerForScannerException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Scanner;
 
-@Slf4j
-public class EventSchedulerService {
-    private static final String PECHAKUCHA = "PechaKucha";
-    private static final String REGEX = ";";
+import static net.afrinic.event.scheduler.usecase.EventSchedulerSessionService.calculateLastSession;
 
+@Slf4j
+class EventSchedulerService {
 
     public static void scheduleEvent(String filePath) {
+        String REGEX = ";";
+
         FileInputStream fileInputStream;
-        Scanner scanner = null;
+        Scanner scanner;
 
         int sessions = 0; //Number of sessions opened
         int capacity = 0; //minutes
@@ -42,31 +40,13 @@ public class EventSchedulerService {
 
 
                 //Parse duration of event in minutes
-                var duration = getEventDuration(fileReaderTime);
+                var duration = EventSchedulerSessionService.getEventDuration(fileReaderTime);
 
-                if (duration > capacity) { //If there is not enough time remaining in last opened session, new session should be opened
-                    sessions++;
-                    capacity = 210; //Total time a session has
-                    if ((sessions % 2) == 1) { // Morning session
-                        if (sessions != 1) { //If session is not the first session, networking event that comes after last afternoon session should be printed
-                            if (hour < 4) {
-                                hour = 4;
-                                minute = 30;
-                            }
-                            var networkingTime = timeToString(hour, minute);
-                            System.out.println(networkingTime + ": Networking\n");
-                        }
-                        System.out.println("Day " + ((sessions / 2) + 1) + ":\n");
-                        System.out.println("Morning session:");
-                        hour = 9;
-
-                    } else { // Afternoon session
-                        System.out.println("\n12:30-02:00: Lunch\n");
-                        System.out.println("Afternoon session:");
-                        hour = 2;
-                    }
-                    minute = 0;
-                }
+                var eventTimeParameters = new EventTimeParameters(sessions, capacity, hour, minute, duration).invoke();
+                sessions = eventTimeParameters.getSessions();
+                capacity = eventTimeParameters.getCapacity();
+                hour = eventTimeParameters.getHour();
+                minute = eventTimeParameters.getMinute();
                 //Calculate start and end time of this event and print relevant information about it
                 capacity -= duration;
                 var startTime = timeToString(hour, minute);
@@ -78,40 +58,17 @@ public class EventSchedulerService {
 
 
             }
-
             //calculate last session
             calculateLastSession(sessions, hour, minute);
+            scanner.close();
 
-        } catch (FileNotFoundException fileNotFoundException) {
-
+        } catch (FileNotFoundException e) {
             throw new FilePathInvalidException();
         }
-        try {
-            scanner.close();
-        } catch (NullPointerException e) {
-            throw new NullPointerForScannerException();
-        }
 
 
     }
 
-    public static int getEventDuration(String fileReaderTime) {
-        int duration = 0;
-        try {
-
-            if (fileReaderTime.contains(PECHAKUCHA)) {
-                duration = 5;
-            } else {
-                duration = Integer.parseInt(fileReaderTime.substring(0, fileReaderTime.length() - 3));
-            }
-        } catch (NumberFormatException e) {
-
-            throw new EventDurationInvalidException();
-        }
-
-        return duration;  //minutes
-
-    }
 
     public static String printEventScheduleResult(String startTime, String endTime, String
             fileReaderEvent, String fileReaderSpeaker) {
@@ -123,26 +80,10 @@ public class EventSchedulerService {
         return stringBuilder.toString();
     }
 
-    public static String calculateLastSession(int sessions, int hour, int minute) {
-        String networkingTime = null;
-        if (sessions < 2) {
-            throw new IncorrectSessionValueException();
-        } else if ((sessions % 2) == 0) //If last session is an afternoon session then networking event that comes after it should be printed
-        {
-            if (hour < 4 || ((hour == 4) && minute < 30)) {
-                hour = 4;
-                minute = 30;
-            }
-            networkingTime = timeToString(hour, minute);
-
-            System.out.println(networkingTime + ": Networking\n");
-        }
-
-
-        return networkingTime;
-    }
 
     public static String timeToString(int hour, int minute) {
         return String.format("%02d", hour) + ":" + String.format("%02d", minute);
     }
+
+
 }

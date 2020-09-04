@@ -23,13 +23,10 @@ public class GenericExceptionHandler {
     public ResponseEntity<ErrorResponse> eventDurationInvalidException(EventDurationInvalidException eventDurationInvalidException){
         return new ResponseEntity<>(eventDurationInvalidException.getErrorResponse(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    @ExceptionHandler(NullPointerForScannerException.class)
-    public ResponseEntity<ErrorResponse> nullPointerForScannerException(NullPointerForScannerException nullPointerForScannerException){
-        return new ResponseEntity<>(nullPointerForScannerException.getErrorResponse(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+
     @ExceptionHandler(FilePathInvalidException.class)
     public ResponseEntity<ErrorResponse> filePathInvalidException(FilePathInvalidException filePathInvalidException){
-        return new ResponseEntity<>(filePathInvalidException.getErrorResponse(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(filePathInvalidException.getErrorResponse(), HttpStatus.NOT_FOUND);
     }
 
 
